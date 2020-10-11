@@ -6,6 +6,9 @@
       <button @click="getLocation" class="btn btn-primary">Get Your Location Data</button>
       <br><br>
       <div class="container" style="background-color:#f1f1f1" v-if="locfound">
+        <center>
+          <img v-bind:src="icon" alt="iconweather" style="width:100px">
+        </center>
         <h4> <b> {{ locname }} </b> </h4>
         <h4>{{ locweatherdesc }}</h4>
         <h5> {{ lattitude }} {{ longitude }}</h5>
@@ -49,6 +52,7 @@ export default {
       locweatherdesc: '',
       loctemp: '',
       lochumidity: '',
+      icon:'',
       locwind: ''
     }
   },
@@ -113,20 +117,32 @@ export default {
             vm.longitude = `Longitude: ${vm.long}`
 
             var url = "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/weather?lat="+vm.lat+"&lon="+vm.long+"&APPID=84c375472712a1a880ffba2edbc74476&units=metric";
-              fetch(url).then(result => {
+            fetch(url).then(result => {
                   console.log(result);
                   return result.json();
                 })
-              .then(data => {
+            .then(data => {
              
                   vm.locname = `Location: ${data.name}, ${data.sys.country}`;
                   vm.locweatherdesc = `${data.weather[0].main} | ${data.weather[0].description}`
                   vm.loctemp = `Temp: ${data.main.temp} C | Feels Like: ${data.main.feels_like} C`
                   vm.lochumidity = `Humidity: ${data.main.humidity} %`;
                   vm.locwind = `Wind Speed: ${data.wind.speed} m/s | Wind Direction ${data.wind.deg} deg`
-              })
+                  vm.icon = `https://openweathermap.org/img/w/${data.weather[0].icon}.png`
+            })
 
-            }
+            var url2 = "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/onecall?lat="+vm.lat+"&lon="+vm.long+"&exclude=hourly&appid=84c375472712a1a880ffba2edbc74476";
+            fetch(url2).then(result => {
+                  console.log(result);
+                  return result.json();
+                })
+            .then(data => {
+             console.log(data)
+              
+            })
+
+
+          }
 
          }
 
