@@ -6,34 +6,15 @@
       <button @click="getLocation" class="btn btn-primary">Get Your Location Data</button>
       <br><br>
       <div class="container" style="background-color:#f1f1f1" v-if="locfound">
-        <h4>Lattitude of your location: {{ lat }}</h4>
-        <h4 style="color=#fff">Longitude of your location: {{ long }}</h4>
+        <h4> <b> {{ locname }} </b> </h4>
+        <h4>{{ locweatherdesc }}</h4>
+        <h5> {{ lattitude }} {{ longitude }}</h5>
+        <h4>{{ loctemp }}</h4>
+        <h4>{{ lochumidity }}</h4>
+        <h5>{{ locwind }}</h5>
       </div>
     </div>
     </center>
-
-      <center>
-        <h4>Enter name of any location (keep no space) to know the current weather</h4>
-        
-      <div class="container" @keyup.enter="getWeather"> 
-      
-            <label>Enter Name of The Place: </label>
-            <input type="text" placeholder="Type here" v-model="cityname" required> <br> 
-            <br><br>
-        
-        <button class="btn btn-primary" v-on:click="getWeather">Submit</button>
-        <br>
-      </div> 
-      </center>
-
-      <div class="container" style="background-color:#f1f1f1" v-if="gotweather"> 
-            <img v-bind:src="icon" alt="">
-            <p>Location {{ cityname }}</p>
-            <p>{{ weatherText }}</p>
-            <p>Temperature: {{ temp }} deg C</p>
-            <p>{{ rain }}</p>
-            <p v-if="ppt"> Precipitation Type: {{ raintype }} </p>
-      </div>
         
     
     <center>
@@ -50,65 +31,70 @@
 export default {
   data () {
     return {
-      cityname: '',
-      key: '',
-      temp: '',
-      weatherText: '',
-      ppt: false,
-      rain: '',
-      raintype: '',
-      icon: '',
-      gotweather: false,
+      // cityname: '',
+      // key: '',
+      // temp: '',
+      // weatherText: '',
+      // ppt: false,
+      // rain: '',
+      // raintype: '',
+      // icon: '',
+      // gotweather: false,
       lat: '',
       long: '', 
-      locfound: false
+      lattitude: '',
+      longitude: '',
+      locfound: false,
+      locname: '',
+      locweatherdesc: '',
+      loctemp: '',
+      lochumidity: '',
+      locwind: ''
     }
   },
   methods: {
-        getWeather: function(){
+        // getWeather: function(){
 
-          var url = `https://cors-anywhere.herokuapp.com/dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=qhfTcEvsGTNcTMIps5rAD1rPSr7jd6An&q=${this.cityname}`
-          fetch(url).then(result => {
-          console.log(result);
-          return result.json();
-        })
-        .then(data => {
-          console.log(data)
-          this.key = data[0].Key
-          this.cityname = `${data[0].LocalizedName}, ${data[0].AdministrativeArea.LocalizedName}, ${data[0].Country.LocalizedName}`
+        //   var url = `https://cors-anywhere.herokuapp.com/dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=qhfTcEvsGTNcTMIps5rAD1rPSr7jd6An&q=${this.cityname}`
+        //   fetch(url).then(result => {
+        //   console.log(result);
+        //   return result.json();
+        // })
+        // .then(data => {
+        //   console.log(data)
+        //   this.key = data[0].Key
+        //   this.cityname = `${data[0].LocalizedName}, ${data[0].AdministrativeArea.LocalizedName}, ${data[0].Country.LocalizedName}`
           
-          // fetching city weather
-          fetch(`https://cors-anywhere.herokuapp.com/dataservice.accuweather.com/currentconditions/v1/${this.key}?apikey=qhfTcEvsGTNcTMIps5rAD1rPSr7jd6An`)
-          .then(result => {
-            return result.json();
-          })
-          .then(data =>{
-            console.log(data)
-            this.temp = data[0].Temperature.Metric.Value;
-            this.ppt = data[0].HasPrecipitation;
-            if (this.ppt){
-              this.rain = 'Raining'
-              this.raintype = data[0].PrecipitationType;
-            } else {
-              this.rain = 'Not Raining'
-            }
+        //   // fetching city weather
+        //   fetch(`https://cors-anywhere.herokuapp.com/dataservice.accuweather.com/currentconditions/v1/${this.key}?apikey=qhfTcEvsGTNcTMIps5rAD1rPSr7jd6An`)
+        //   .then(result => {
+        //     return result.json();
+        //   })
+        //   .then(data =>{
+        //     console.log(data)
+        //     this.temp = data[0].Temperature.Metric.Value;
+        //     this.ppt = data[0].HasPrecipitation;
+        //     if (this.ppt){
+        //       this.rain = 'Raining'
+        //       this.raintype = data[0].PrecipitationType;
+        //     } else {
+        //       this.rain = 'Not Raining'
+        //     }
 
-            this.weatherText = data[0].WeatherText;
-            this.icon = `https://www.accuweather.com/images/weathericons/0${data[0].WeatherIcon}.svg`
+        //     this.weatherText = data[0].WeatherText;
+        //     this.icon = `https://www.accuweather.com/images/weathericons/0${data[0].WeatherIcon}.svg`
 
-          })
+        //   })
 
-        })
+        // })
 
-        this.gotweather = true
+        // this.gotweather = true
             
-        },
+        // },
 
 
         resetWeather: function(){
-            this.cityname = '',
-            this.key = '',
-            this.gotweather = false
+            this.locfound = false;
         },
 
         getLocation: function() {
@@ -122,19 +108,27 @@ export default {
           function successFunction(position) {
             vm.lat = position.coords.latitude;
             vm.long = position.coords.longitude;
-        }
 
-        var url = `https://cors-anywhere.herokuapp.com/dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=qhfTcEvsGTNcTMIps5rAD1rPSr7jd6An&q=${this.cityname}`
-          fetch(url).then(result => {
-          console.log(result);
-          return result.json();
-        })
-        .then(data => {
-          console.log(data)
-        })
+            vm.lattitude = `Lattitude: ${vm.lat}`
+            vm.longitude = `Longitude: ${vm.long}`
 
+            var url = "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/weather?lat="+vm.lat+"&lon="+vm.long+"&APPID=84c375472712a1a880ffba2edbc74476&units=metric";
+              fetch(url).then(result => {
+                  console.log(result);
+                  return result.json();
+                })
+              .then(data => {
+             
+                  vm.locname = `Location: ${data.name}, ${data.sys.country}`;
+                  vm.locweatherdesc = `${data.weather[0].main} | ${data.weather[0].description}`
+                  vm.loctemp = `Temp: ${data.main.temp} C | Feels Like: ${data.main.feels_like} C`
+                  vm.lochumidity = `Humidity: ${data.main.humidity} %`;
+                  vm.locwind = `Wind Speed: ${data.wind.speed} m/s | Wind Direction ${data.wind.deg} deg`
+              })
 
-      }
+            }
+
+         }
 
     }
 }
