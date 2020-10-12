@@ -3,7 +3,7 @@
   <div>
     <center>
     <div class="container">
-      <button @click="getLocation" class="btn btn-primary">Get Your Location Data</button>
+      <button @click="getLocation" class="btn btn-primary">Get Your Location Weather Infomration</button>
       <br><br>
       <div class="container" style="background-color:#f1f1f1" v-if="locfound">
         <center>
@@ -18,6 +18,64 @@
       </div>
     </div>
     </center>
+
+    <div class="cards" v-if="locfound">
+      <div class="card" >
+        <h4> <b>Forecast +1 Day</b> </h4>
+        <center>
+        <img v-bind:src="ficon0" alt="ii"> <br>
+        {{ flocweatherdesc[0] }} <br>
+        {{ ftemp[0] }} <br>
+        {{ fhumidity[0] }} <br>
+        </center>
+
+      </div>
+      <div class="card">
+        <h4> <b>Forecast +2 Day</b> </h4>
+        <center>
+        <img v-bind:src="ficon1" alt="ii"> <br>
+        {{ flocweatherdesc[1] }} <br>
+        {{ ftemp[1] }} <br>
+        {{ fhumidity[1] }} <br>
+        </center>
+      </div>
+      <div class="card">
+        <h4> <b>Forecast +3 Day</b> </h4>
+        <center>
+        <img v-bind:src="ficon2" alt="ii"> <br>
+        {{ flocweatherdesc[2] }} <br>
+        {{ ftemp[2] }} <br>
+        {{ fhumidity[2] }} <br>
+        </center>
+      </div>
+      <div class="card">
+        <h4> <b>Forecast +4 Day</b> </h4>
+        <center>
+        <img v-bind:src="ficon3" alt="ii"> <br>
+        {{ flocweatherdesc[3] }} <br>
+        {{ ftemp[3] }} <br>
+        {{ fhumidity[3] }} <br>
+        </center>
+      </div>
+      <div class="card">
+        <h4> <b>Forecast +5 Day</b> </h4>
+        <center>
+        <img v-bind:src="ficon4" alt="ii"> <br>
+        {{ flocweatherdesc[4] }} <br>
+        {{ ftemp[4] }} <br>
+        {{ fhumidity[4] }} <br>
+        </center>
+      </div>
+        <div class="card">
+        <h4> <b>Forecast +6 Day</b> </h4>
+        <center>
+        <img v-bind:src="ficon5" alt="ii"> <br>
+        {{ flocweatherdesc[5] }} <br>
+        {{ ftemp[5] }} <br>
+        {{ fhumidity[5] }} <br>
+        </center>
+      </div>
+    </div>
         
     
     <center>
@@ -53,7 +111,16 @@ export default {
       loctemp: '',
       lochumidity: '',
       icon:'',
-      locwind: ''
+      locwind: '',
+      flocweatherdesc: [],
+      ftemp: [],
+      fhumidity: [],
+      ficon0: '',
+      ficon1: '',
+      ficon2: '',
+      ficon3: '',
+      ficon4: '',
+      ficon5: '',
     }
   },
   methods: {
@@ -131,13 +198,27 @@ export default {
                   vm.icon = `https://openweathermap.org/img/w/${data.weather[0].icon}.png`
             })
 
-            var url2 = "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/onecall?lat="+vm.lat+"&lon="+vm.long+"&exclude=hourly&appid=84c375472712a1a880ffba2edbc74476";
+            var url2 = "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/onecall?lat="+vm.lat+"&lon="+vm.long+"&exclude=hourly&appid=84c375472712a1a880ffba2edbc74476&units=metric";
             fetch(url2).then(result => {
                   console.log(result);
                   return result.json();
                 })
             .then(data => {
              console.log(data)
+             for (var i = 0; i < 6; i++){
+
+               vm.flocweatherdesc.push(`${data.daily[i].weather[0].main} | ${data.daily[i].weather[0].description}`)
+               vm.ftemp.push(`Temp: ${data.daily[i].temp.day} C  (Day), | ${data.daily[i].temp.night} C (Night)`)
+               vm.fhumidity.push(`Humidity: ${data.daily[i].humidity} %`)
+               
+             }
+
+             vm.ficon0 = `https://openweathermap.org/img/w/${data.daily[0].weather[0].icon}.png`
+             vm.ficon1 = `https://openweathermap.org/img/w/${data.daily[0].weather[0].icon}.png`
+             vm.ficon2 = `https://openweathermap.org/img/w/${data.daily[0].weather[0].icon}.png`
+             vm.ficon3 = `https://openweathermap.org/img/w/${data.daily[0].weather[0].icon}.png`
+             vm.ficon4 = `https://openweathermap.org/img/w/${data.daily[0].weather[0].icon}.png`
+             vm.ficon5 = `https://openweathermap.org/img/w/${data.daily[0].weather[0].icon}.png`
               
             })
 
@@ -240,4 +321,30 @@ export default {
             width: 100%; 
         } 
     } 
+
+    .card {
+    background-color: dodgerblue;
+    color: white;
+    padding: 1rem;
+    height: 200px;
+    border-radius: 5px;
+}
+
+.cards {
+  max-width: 1200px;
+  margin: 5px auto;
+  display: grid;
+  grid-gap: 1rem;
+}
+
+/* Screen larger than 600px? 2 column */
+@media (min-width: 300px) {
+  .cards { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Screen larger than 900px? 3 columns */
+@media (min-width: 900px) {
+  .cards { grid-template-columns: repeat(3, 1fr); }
+}
+
 </style>
